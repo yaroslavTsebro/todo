@@ -1,29 +1,19 @@
-import { ApiOperation, ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, IsEnum, IsDateString } from 'class-validator';
-import { TaskStatus } from 'src/shared/contracts/entities/task';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateTaskDto {
+  @ApiProperty({
+    description: 'Title of the task',
+    example: 'Design Homepage',
+  })
   @IsString()
-  @ApiProperty()
   title: string;
 
+  @ApiPropertyOptional({
+    description: 'Description of the task',
+    example: 'Create a responsive design for the homepage.',
+  })
   @IsOptional()
   @IsString()
-  @ApiProperty()
   description?: string;
-
-  @IsOptional()
-  @ApiProperty({ enum: TaskStatus })
-  @IsEnum(TaskStatus)
-  status?: TaskStatus;
-
-  @IsOptional()
-  @ApiProperty()
-  @IsDateString()
-  startDate?: Date;
-
-  @IsOptional()
-  @ApiProperty()
-  @IsDateString()
-  endDate?: Date;
 }

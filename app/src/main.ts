@@ -16,7 +16,11 @@ async function bootstrap() {
     .setTitle('API Documentation')
     .setDescription('API endpoints and details')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth({ 
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

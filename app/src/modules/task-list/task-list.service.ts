@@ -74,7 +74,7 @@ export class TaskListService {
   async inviteUserToTaskList(
     taskListId: number,
     dto: InviteUserDto,
-  ): Promise<any> {
+  ): Promise<UserTaskList> {
     return this.userTaskListRepo.create(
       {
         user: { id: dto.userId },
