@@ -25,7 +25,7 @@ import { TaskListService } from './task-list.service';
 import { TaskList } from 'src/shared/dto/entities/task-list';
 import { UserTaskList } from 'src/shared/dto/entities/user-task-list';
 
-@ApiTags('projects')
+@ApiTags('task-list')
 @ApiBearerAuth()
 @Controller('projects')
 @UseGuards(AuthorizationGuard)

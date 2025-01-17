@@ -1,6 +1,5 @@
-.openapi-generator-ignore
 apis/AuthApi.ts
-apis/ProjectsApi.ts
+apis/TaskListApi.ts
 apis/TasksApi.ts
 apis/UsersApi.ts
 apis/index.ts
