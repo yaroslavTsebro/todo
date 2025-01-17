@@ -9,9 +9,13 @@ models/CreateTaskListDto.ts
 models/EmailAuthPayload.ts
 models/InviteUserDto.ts
 models/RefreshPayload.ts
+models/Task.ts
+models/TaskList.ts
 models/TaskListControllerRemoveUserRequest.ts
 models/TokenResponse.ts
 models/UpdateProjectDto.ts
 models/UpdateTaskDto.ts
+models/User.ts
+models/UserTaskList.ts
 models/index.ts
 runtime.ts

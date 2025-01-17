@@ -1,47 +1,14 @@
-import App from '../App';
+import { RouteObject, createBrowserRouter } from 'react-router-dom';
+import SignInPage from '../pages/SignInPage';
 
 export const routes: RouteObject[] = [
   {
-    path: '/',
-    Component: App,
-    children: [
-      {
-        path: '/',
-        Component: StartPage,
-      },
-      {
-        path: '/signin',
-        Component: SignIn,
-      },
-      {
-        path: '/signup',
-        Component: SignUp,
-      },
-      {
-        path: '/projects',
-        Component: Projects,
-      },
-      {
-        path: '/design',
-        Component: Design,
-      },
-      {
-        path: '/data',
-        Component: Data,
-      },
-      {
-        path: '/actions',
-        Component: Actions,
-      },
-      {
-        path: '/settings',
-        Component: Settings,
-      },
-      {
-        path: '/preview',
-        Component: Preview,
-      },
-    ]
+    path: '/signin',
+    Component: SignInPage,
+  },
+  {
+    path: '/signup',
+    Component: SignInPage,
   },
 ];
 

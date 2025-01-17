@@ -1,63 +1,36 @@
-import { _allowStateChangesInsideComputed } from 'mobx';
-import { Persisted, Store } from '../../shared/decorators';
-import { User } from '../../openapi/models/User';
-import { authApi, userApi } from '../../api';
-import router from '../../router';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface IAuthPayload {
-  sub: string;
-  email: string;
-  workspaceId: number;
-  projectId: number;
+interface UserState {
+  name: string | null;
+  email: string | null;
+  accessToken: string | null;
 }
 
-@Store()
-class UserStore {
-  user!: User;
+const initialState: UserState = {
+  name: null,
+  email: null,
+  accessToken: null,
+};
 
-  @Persisted()
-  _accessToken!: string;
+const userSlice = createSlice({
+  name: 'user',
+  initialState,
+  reducers: {
+    setUser(state, action: PayloadAction<{ name: string | null; email: string }>) {
+      state.name = action.payload.name;
+      state.email = action.payload.email;
+    },
+    setAccessToken(state, action: PayloadAction<string>) {
+      state.accessToken = action.payload;
+    },
+    clearUser(state) {
+      state.name = null;
+      state.email = null;
+      state.accessToken = null;
+    },
+  },
+});
 
-  get accessToken(): string {
-    return this._accessToken;
-  }
+export const { setUser, setAccessToken, clearUser } = userSlice.actions;
 
-  get authPayload(): IAuthPayload {
-    const json = this.accessToken !== null
-      ? atob(this.accessToken.split('.')[1])
-      : '{}';
-
-    return JSON.parse(json);
-  }
-
-  constructor() {
-    if (this.accessToken === null) {
-      router.navigate('/signin');
-    }
-  }
-
-  setAccessToken(accessToken: string): void {
-    this._accessToken = accessToken;
-  }
-
-  setUser(user: User) {
-    this.user = user;
-  }
-
-  async getUser() {
-    const response = await userApi.userControllerGetUser();
-    this.setUser(response);
-  }
-
-  changeWorkspace(workspaceId: number): Promise<void> {
-    return authApi.authControllerChangeMyWorkspace({
-      changeWorkspaceDto: {
-        workspaceId,
-      }
-    })
-      .then(data => data.accessToken)
-      .then(this.setAccessToken.bind(this));
-  }
-}
-
-export default UserStore;
+export default userSlice.reducer;

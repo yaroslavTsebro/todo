@@ -18,6 +18,7 @@ import * as runtime from '../runtime';
 import type {
   CreateTaskListDto,
   InviteUserDto,
+  TaskList,
   TaskListControllerRemoveUserRequest,
   UpdateProjectDto,
 } from '../models/index';
@@ -26,6 +27,8 @@ import {
     CreateTaskListDtoToJSON,
     InviteUserDtoFromJSON,
     InviteUserDtoToJSON,
+    TaskListFromJSON,
+    TaskListToJSON,
     TaskListControllerRemoveUserRequestFromJSON,
     TaskListControllerRemoveUserRequestToJSON,
     UpdateProjectDtoFromJSON,
@@ -68,7 +71,7 @@ export class TaskListApi extends runtime.BaseAPI {
     /**
      * Create a new project
      */
-    async taskListControllerCreateRaw(requestParameters: TaskListControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async taskListControllerCreateRaw(requestParameters: TaskListControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TaskList>> {
         if (requestParameters['createTaskListDto'] == null) {
             throw new runtime.RequiredError(
                 'createTaskListDto',
@@ -98,13 +101,13 @@ export class TaskListApi extends runtime.BaseAPI {
             body: CreateTaskListDtoToJSON(requestParameters['createTaskListDto']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => TaskListFromJSON(jsonValue));
     }
 
     /**
      * Create a new project
      */
-    async taskListControllerCreate(requestParameters: TaskListControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async taskListControllerCreate(requestParameters: TaskListControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TaskList> {
         const response = await this.taskListControllerCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -153,7 +156,7 @@ export class TaskListApi extends runtime.BaseAPI {
     /**
      * Get a project by its ID
      */
-    async taskListControllerGetByIdRaw(requestParameters: TaskListControllerGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async taskListControllerGetByIdRaw(requestParameters: TaskListControllerGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TaskList>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -180,13 +183,13 @@ export class TaskListApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => TaskListFromJSON(jsonValue));
     }
 
     /**
      * Get a project by its ID
      */
-    async taskListControllerGetById(requestParameters: TaskListControllerGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async taskListControllerGetById(requestParameters: TaskListControllerGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TaskList> {
         const response = await this.taskListControllerGetByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -294,7 +297,7 @@ export class TaskListApi extends runtime.BaseAPI {
     /**
      * Update project details
      */
-    async taskListControllerUpdateRaw(requestParameters: TaskListControllerUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async taskListControllerUpdateRaw(requestParameters: TaskListControllerUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TaskList>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -331,13 +334,13 @@ export class TaskListApi extends runtime.BaseAPI {
             body: UpdateProjectDtoToJSON(requestParameters['updateProjectDto']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => TaskListFromJSON(jsonValue));
     }
 
     /**
      * Update project details
      */
-    async taskListControllerUpdate(requestParameters: TaskListControllerUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async taskListControllerUpdate(requestParameters: TaskListControllerUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TaskList> {
         const response = await this.taskListControllerUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -15,6 +15,13 @@
 
 
 import * as runtime from '../runtime';
+import type {
+  User,
+} from '../models/index';
+import {
+    UserFromJSON,
+    UserToJSON,
+} from '../models/index';
 
 /**
  * 
@@ -24,7 +31,7 @@ export class UsersApi extends runtime.BaseAPI {
     /**
      * Get the currently logged-in user profile
      */
-    async userControllerGetProfileRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async userControllerGetProfileRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -36,13 +43,13 @@ export class UsersApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserFromJSON(jsonValue));
     }
 
     /**
      * Get the currently logged-in user profile
      */
-    async userControllerGetProfile(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async userControllerGetProfile(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User> {
         const response = await this.userControllerGetProfileRaw(initOverrides);
         return await response.value();
     }

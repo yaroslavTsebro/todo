@@ -17,11 +17,14 @@
 import * as runtime from '../runtime';
 import type {
   CreateTaskDto,
+  Task,
   UpdateTaskDto,
 } from '../models/index';
 import {
     CreateTaskDtoFromJSON,
     CreateTaskDtoToJSON,
+    TaskFromJSON,
+    TaskToJSON,
     UpdateTaskDtoFromJSON,
     UpdateTaskDtoToJSON,
 } from '../models/index';
@@ -64,7 +67,7 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Create a new task
      */
-    async taskControllerCreateRaw(requestParameters: TaskControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async taskControllerCreateRaw(requestParameters: TaskControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Task>> {
         if (requestParameters['taskListId'] == null) {
             throw new runtime.RequiredError(
                 'taskListId',
@@ -101,13 +104,13 @@ export class TasksApi extends runtime.BaseAPI {
             body: CreateTaskDtoToJSON(requestParameters['createTaskDto']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => TaskFromJSON(jsonValue));
     }
 
     /**
      * Create a new task
      */
-    async taskControllerCreate(requestParameters: TaskControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async taskControllerCreate(requestParameters: TaskControllerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Task> {
         const response = await this.taskControllerCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -115,7 +118,7 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Delete a task
      */
-    async taskControllerDeleteRaw(requestParameters: TaskControllerDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async taskControllerDeleteRaw(requestParameters: TaskControllerDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Task>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -149,13 +152,13 @@ export class TasksApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => TaskFromJSON(jsonValue));
     }
 
     /**
      * Delete a task
      */
-    async taskControllerDelete(requestParameters: TaskControllerDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async taskControllerDelete(requestParameters: TaskControllerDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Task> {
         const response = await this.taskControllerDeleteRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -237,7 +240,7 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Get a task by its ID
      */
-    async taskControllerGetByIdRaw(requestParameters: TaskControllerGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async taskControllerGetByIdRaw(requestParameters: TaskControllerGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Task>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -271,13 +274,13 @@ export class TasksApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => TaskFromJSON(jsonValue));
     }
 
     /**
      * Get a task by its ID
      */
-    async taskControllerGetById(requestParameters: TaskControllerGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async taskControllerGetById(requestParameters: TaskControllerGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Task> {
         const response = await this.taskControllerGetByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -285,7 +288,7 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Update a task
      */
-    async taskControllerUpdateRaw(requestParameters: TaskControllerUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async taskControllerUpdateRaw(requestParameters: TaskControllerUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Task>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -329,13 +332,13 @@ export class TasksApi extends runtime.BaseAPI {
             body: UpdateTaskDtoToJSON(requestParameters['updateTaskDto']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => TaskFromJSON(jsonValue));
     }
 
     /**
      * Update a task
      */
-    async taskControllerUpdate(requestParameters: TaskControllerUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async taskControllerUpdate(requestParameters: TaskControllerUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Task> {
         const response = await this.taskControllerUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
