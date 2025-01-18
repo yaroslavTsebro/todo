@@ -20,34 +20,36 @@ const SignInPage: React.FC = () => {
 
   const handleSignIn = async () => {
     if (!isFormValid) return;
-
+  
     try {
       setErrorMessage('');
-
-      const response = await authApi.authControllerSignInViaEmailRaw({
+  
+      const response = await authApi.authControllerSignInViaEmail({
         emailAuthPayload: formValues,
       });
-
-      const {accessToken, refreshToken} = await response.value()
-
+      const { accessToken, refreshToken } = response;
+  
       saveTokens(accessToken, refreshToken);
       dispatch(setAccessToken(accessToken));
-
-      const userProfile = await userApi.userControllerGetProfile();
+  
+      const userProfile = await userApi.userControllerGetProfile({headers: { authorization: accessToken ?  `Bearer ${accessToken}` : '' },});
+      
       dispatch(
         setUser({
           name: userProfile.name,
           email: userProfile.email,
         })
       );
-
-      navigate('/tasks');
+  
+      navigate('/dashboard');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const message =
         err.response?.data?.message || 'An error occurred during sign-in.';
       setErrorMessage(message);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">

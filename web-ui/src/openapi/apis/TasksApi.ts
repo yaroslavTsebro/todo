@@ -18,6 +18,7 @@ import * as runtime from '../runtime';
 import type {
   CreateTaskDto,
   Task,
+  TaskPaginationResult,
   UpdateTaskDto,
 } from '../models/index';
 import {
@@ -25,37 +26,39 @@ import {
     CreateTaskDtoToJSON,
     TaskFromJSON,
     TaskToJSON,
+    TaskPaginationResultFromJSON,
+    TaskPaginationResultToJSON,
     UpdateTaskDtoFromJSON,
     UpdateTaskDtoToJSON,
 } from '../models/index';
 
 export interface TaskControllerCreateRequest {
-    taskListId: number;
+    taskListId: string;
     createTaskDto: CreateTaskDto;
 }
 
 export interface TaskControllerDeleteRequest {
     id: number;
-    taskListId: number;
+    taskListId: string;
 }
 
 export interface TaskControllerGetAllRequest {
-    taskListId: number;
+    taskListId: string;
     field: TaskControllerGetAllFieldEnum;
     order: TaskControllerGetAllOrderEnum;
-    status?: TaskControllerGetAllStatusEnum;
-    limit?: number;
     page?: number;
+    limit?: number;
+    status?: TaskControllerGetAllStatusEnum;
 }
 
 export interface TaskControllerGetByIdRequest {
     id: number;
-    taskListId: number;
+    taskListId: string;
 }
 
 export interface TaskControllerUpdateRequest {
     id: number;
-    taskListId: number;
+    taskListId: string;
     updateTaskDto: UpdateTaskDto;
 }
 
@@ -166,7 +169,7 @@ export class TasksApi extends runtime.BaseAPI {
     /**
      * Get all tasks
      */
-    async taskControllerGetAllRaw(requestParameters: TaskControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async taskControllerGetAllRaw(requestParameters: TaskControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TaskPaginationResult>> {
         if (requestParameters['taskListId'] == null) {
             throw new runtime.RequiredError(
                 'taskListId',
@@ -190,6 +193,14 @@ export class TasksApi extends runtime.BaseAPI {
 
         const queryParameters: any = {};
 
+        if (requestParameters['page'] != null) {
+            queryParameters['page'] = requestParameters['page'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
         if (requestParameters['status'] != null) {
             queryParameters['status'] = requestParameters['status'];
         }
@@ -200,14 +211,6 @@ export class TasksApi extends runtime.BaseAPI {
 
         if (requestParameters['order'] != null) {
             queryParameters['order'] = requestParameters['order'];
-        }
-
-        if (requestParameters['limit'] != null) {
-            queryParameters['limit'] = requestParameters['limit'];
-        }
-
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -227,14 +230,15 @@ export class TasksApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => TaskPaginationResultFromJSON(jsonValue));
     }
 
     /**
      * Get all tasks
      */
-    async taskControllerGetAll(requestParameters: TaskControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.taskControllerGetAllRaw(requestParameters, initOverrides);
+    async taskControllerGetAll(requestParameters: TaskControllerGetAllRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TaskPaginationResult> {
+        const response = await this.taskControllerGetAllRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**

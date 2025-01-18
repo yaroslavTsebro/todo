@@ -1,4 +1,5 @@
 import React from 'react';
+import { twMerge } from "tailwind-merge";
 
 interface ButtonProps {
   text: string;
@@ -7,10 +8,11 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({ text, onClick, className }) => {
+  const classes = twMerge(`w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition ${className ?? ""}`);
   return (
     <button
       onClick={onClick}
-      className={`w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition ${className}`}
+      className={classes}
     >
       {text}
     </button>

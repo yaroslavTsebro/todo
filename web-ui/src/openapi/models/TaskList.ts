@@ -14,12 +14,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { UserTaskList } from './UserTaskList';
-import {
-    UserTaskListFromJSON,
-    UserTaskListFromJSONTyped,
-    UserTaskListToJSON,
-} from './UserTaskList';
 import type { Task } from './Task';
 import {
     TaskFromJSON,
@@ -35,10 +29,10 @@ import {
 export interface TaskList {
     /**
      * TaskList ID
-     * @type {number}
+     * @type {string}
      * @memberof TaskList
      */
-    id: number;
+    id: string;
     /**
      * TaskList name
      * @type {string}
@@ -57,12 +51,6 @@ export interface TaskList {
      * @memberof TaskList
      */
     tasks: Array<Task>;
-    /**
-     * List of user-task associations in the task list
-     * @type {Array<UserTaskList>}
-     * @memberof TaskList
-     */
-    userTaskLists: Array<UserTaskList>;
     /**
      * Creation date
      * @type {Date}
@@ -85,7 +73,6 @@ export function instanceOfTaskList(value: object): value is TaskList {
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
     if (!('tasks' in value) || value['tasks'] === undefined) return false;
-    if (!('userTaskLists' in value) || value['userTaskLists'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -104,8 +91,7 @@ export function TaskListFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'id': json['id'],
         'name': json['name'],
         'description': json['description'],
-        'tasks': ((json['tasks'] as Array<any>).map(TaskFromJSON)),
-        'userTaskLists': ((json['userTaskLists'] as Array<any>).map(UserTaskListFromJSON)),
+        'tasks': json['tasks'] ? ((json['tasks'] as Array<any>).map(TaskFromJSON)): [],
         'createdAt': (new Date(json['createdAt'])),
         'updatedAt': (json['updatedAt'] == null ? null : new Date(json['updatedAt'])),
     };
@@ -121,7 +107,6 @@ export function TaskListToJSON(value?: TaskList | null): any {
         'name': value['name'],
         'description': value['description'],
         'tasks': ((value['tasks'] as Array<any>).map(TaskToJSON)),
-        'userTaskLists': ((value['userTaskLists'] as Array<any>).map(UserTaskListToJSON)),
         'createdAt': ((value['createdAt']).toISOString()),
         'updatedAt': (value['updatedAt'] == null ? null : (value['updatedAt'] as any).toISOString()),
     };

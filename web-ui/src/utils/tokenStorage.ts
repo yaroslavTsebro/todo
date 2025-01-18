@@ -1,5 +1,5 @@
-const ACCESS_TOKEN_KEY = 'accessToken';
-const REFRESH_TOKEN_KEY = 'refreshToken';
+export const ACCESS_TOKEN_KEY = 'accessToken';
+export const REFRESH_TOKEN_KEY = 'refreshToken';
 
 export const saveTokens = (accessToken: string, refreshToken: string) => {
   localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);

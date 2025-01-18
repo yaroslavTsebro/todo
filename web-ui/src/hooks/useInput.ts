@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react"; 
 
 type State = [
   enteredValue: string,
@@ -10,8 +10,8 @@ type State = [
   reset: Function
 ];
 
-const useInput = (functions: Function[]): State => {
-  const [enteredValue, setEnteredValue] = useState<string>("");
+const useInput = (functions: Function[], initialValue: string = ""): State => {
+  const [enteredValue, setEnteredValue] = useState<string>(initialValue); // Initialize with initialValue
   const [valueInputIsTouched, setValueInputIsTouched] =
     useState<boolean>(false);
 
@@ -26,15 +26,13 @@ const useInput = (functions: Function[]): State => {
     setEnteredValue(event.target.value);
   };
 
-  const inputBlurHandler = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
+  const inputBlurHandler = (): void => {
     setValueInputIsTouched(true);
   };
 
   const reset = (): void => {
     setValueInputIsTouched(false);
-    setEnteredValue("");
+    setEnteredValue(initialValue);
   };
 
   return [

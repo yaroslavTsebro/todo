@@ -22,10 +22,10 @@ import { mapValues } from '../runtime';
 export interface InviteUserDto {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof InviteUserDto
      */
-    userId: number;
+    email: string;
     /**
      * Role to assign to the invited user
      * @type {string}
@@ -50,7 +50,7 @@ export type InviteUserDtoRoleEnum = typeof InviteUserDtoRoleEnum[keyof typeof In
  * Check if a given object implements the InviteUserDto interface.
  */
 export function instanceOfInviteUserDto(value: object): value is InviteUserDto {
-    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if (!('email' in value) || value['email'] === undefined) return false;
     if (!('role' in value) || value['role'] === undefined) return false;
     return true;
 }
@@ -65,7 +65,7 @@ export function InviteUserDtoFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'userId': json['userId'],
+        'email': json['email'],
         'role': json['role'],
     };
 }
@@ -76,7 +76,7 @@ export function InviteUserDtoToJSON(value?: InviteUserDto | null): any {
     }
     return {
         
-        'userId': value['userId'],
+        'email': value['email'],
         'role': value['role'],
     };
 }

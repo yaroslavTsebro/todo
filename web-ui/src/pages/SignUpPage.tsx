@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authApi } from '../api';
+import { authApi, userApi } from '../api';
 import TextInput from '../components/UI/TextInput';
 import Button from '../components/UI/Button';
-import { setAccessToken } from '../storage/slices/user';
+import { setAccessToken, setUser } from '../storage/slices/user';
 import { saveTokens } from '../utils/tokenStorage';
 import { useDispatch } from 'react-redux';
 
@@ -33,11 +33,25 @@ const SignUpPage: React.FC = () => {
       saveTokens(accessToken, refreshToken);
       dispatch(setAccessToken(accessToken));
 
-      navigate('/main');
+      const userProfile = await userApi.userControllerGetProfile({ headers: { authorization: accessToken ? `Bearer ${accessToken}` : '' }, });
+
+      dispatch(
+        setUser({
+          name: userProfile.name,
+          email: userProfile.email,
+        })
+      );
+
+      navigate('/dashboard');
+
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const message =
         err.response?.data?.message || 'An error occurred during sign-up.';
       setErrorMessage(message);
+    } finally {
+      // navigate('/dashboard');
     }
   };
 
@@ -54,7 +68,7 @@ const SignUpPage: React.FC = () => {
           type="email"
           validations={[
             { validator: (value) => value.trim() !== '', message: 'Email must not be empty.' },
-            { validator: (value) => /^[^\s@]+@[^\s@]+\\.[^\s@]+$/.test(value), message: 'Invalid email address.' },
+            { validator: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), message: 'Invalid email address.' },
           ]}
           onValidChange={(value, isValid) => {
             setFormValues((prev) => ({ ...prev, email: value }));

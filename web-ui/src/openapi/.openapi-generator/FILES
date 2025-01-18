@@ -12,10 +12,12 @@ models/RefreshPayload.ts
 models/Task.ts
 models/TaskList.ts
 models/TaskListControllerRemoveUserRequest.ts
+models/TaskPaginationResult.ts
 models/TokenResponse.ts
 models/UpdateProjectDto.ts
 models/UpdateTaskDto.ts
 models/User.ts
 models/UserTaskList.ts
+models/UserTaskListPaginationResult.ts
 models/index.ts
 runtime.ts

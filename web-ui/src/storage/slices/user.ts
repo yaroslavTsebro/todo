@@ -6,11 +6,14 @@ interface UserState {
   accessToken: string | null;
 }
 
-const initialState: UserState = {
-  name: null,
-  email: null,
-  accessToken: null,
+const loadFromLocalStorage = (): UserState => {
+  const userData = localStorage.getItem('user');
+  return userData
+    ? JSON.parse(userData)
+    : { name: null, email: null, accessToken: null };
 };
+
+const initialState: UserState = loadFromLocalStorage();
 
 const userSlice = createSlice({
   name: 'user',
@@ -19,14 +22,20 @@ const userSlice = createSlice({
     setUser(state, action: PayloadAction<{ name: string | null; email: string }>) {
       state.name = action.payload.name;
       state.email = action.payload.email;
+
+      localStorage.setItem('user', JSON.stringify(state));
     },
     setAccessToken(state, action: PayloadAction<string>) {
       state.accessToken = action.payload;
+
+      localStorage.setItem('access', JSON.stringify(state));
     },
     clearUser(state) {
       state.name = null;
       state.email = null;
       state.accessToken = null;
+
+      localStorage.removeItem('user');
     },
   },
 });

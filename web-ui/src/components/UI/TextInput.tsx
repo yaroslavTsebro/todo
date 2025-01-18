@@ -10,6 +10,7 @@ interface TextInputWithValidationProps {
     message: string;
   }[];
   onValidChange?: (value: string, isValid: boolean) => void;
+  value?: string;
 }
 
 const TextInput: React.FC<TextInputWithValidationProps> = ({
@@ -18,6 +19,7 @@ const TextInput: React.FC<TextInputWithValidationProps> = ({
   type,
   validations,
   onValidChange,
+  value: initialValue = '',
 }) => {
   const [
     value,
@@ -26,7 +28,7 @@ const TextInput: React.FC<TextInputWithValidationProps> = ({
     validationResults,
     handleChange,
     handleBlur,
-  ] = useInput(validations.map((v) => v.validator));
+  ] = useInput(validations.map((v) => v.validator), initialValue);
 
   const previousValue = React.useRef<string>(value);
   const previousIsValid = React.useRef<boolean>(isValid);
