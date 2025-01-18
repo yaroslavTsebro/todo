@@ -5,8 +5,7 @@ WORKDIR /app
 COPY . .
 RUN npm install
 
-ARG BUILD_ENV=prod
-RUN npm run build:$BUILD_ENV
+RUN npm run build
 
 FROM nginx:1.25.3 AS final
 
