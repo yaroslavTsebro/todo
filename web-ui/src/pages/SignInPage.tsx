@@ -5,7 +5,7 @@ import { authApi, userApi } from '../api';
 import { saveTokens } from '../utils/tokenStorage';
 import TextInput from '../components/UI/TextInput';
 import Button from '../components/UI/Button';
-import { setAccessToken, setUser } from '../storage/slices/user';
+import { setUser } from '../storage/slices/user';
 
 const SignInPage: React.FC = () => {
   const navigate = useNavigate();
@@ -30,10 +30,8 @@ const SignInPage: React.FC = () => {
       const { accessToken, refreshToken } = response;
   
       saveTokens(accessToken, refreshToken);
-      dispatch(setAccessToken(accessToken));
   
-      const userProfile = await userApi.userControllerGetProfile({headers: { authorization: accessToken ?  `Bearer ${accessToken}` : '' },});
-      
+      const userProfile = await userApi.userControllerGetProfile();
       dispatch(
         setUser({
           name: userProfile.name,

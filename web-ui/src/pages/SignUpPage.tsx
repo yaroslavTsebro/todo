@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authApi, userApi } from '../api';
 import TextInput from '../components/UI/TextInput';
 import Button from '../components/UI/Button';
-import { setAccessToken, setUser } from '../storage/slices/user';
+import { setUser } from '../storage/slices/user';
 import { saveTokens } from '../utils/tokenStorage';
 import { useDispatch } from 'react-redux';
 
@@ -24,16 +24,13 @@ const SignUpPage: React.FC = () => {
     try {
       setErrorMessage('');
 
-      const response = await authApi.authControllerSignUpViaEmailRaw({
+      const  { accessToken, refreshToken } = await authApi.authControllerSignUpViaEmail({
         emailAuthPayload: formValues,
       });
 
-      const { accessToken, refreshToken } = await response.value()
-
       saveTokens(accessToken, refreshToken);
-      dispatch(setAccessToken(accessToken));
-
-      const userProfile = await userApi.userControllerGetProfile({ headers: { authorization: accessToken ? `Bearer ${accessToken}` : '' }, });
+      console.log(1);
+      const userProfile = await userApi.userControllerGetProfile();
 
       dispatch(
         setUser({
@@ -50,8 +47,6 @@ const SignUpPage: React.FC = () => {
       const message =
         err.response?.data?.message || 'An error occurred during sign-up.';
       setErrorMessage(message);
-    } finally {
-      // navigate('/dashboard');
     }
   };
 

@@ -14,6 +14,7 @@ import Button from '../components/UI/Button';
 import InviteUserForm from '../components/pages/main/InviteUserForm';
 import UpdateTaskListForm from '../components/pages/main/UpdateTaskListForm';
 import { useNavigate } from 'react-router-dom';
+import CreateTaskListForm from '../components/pages/task-list/CreateTaskListForm';
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
@@ -45,19 +46,27 @@ const MainPage: React.FC = () => {
     }
   };
 
-  const handleCreateTaskList = async () => {
-    const name = prompt('Enter TaskList name');
-    if (name) {
+  const handleCreateTaskList = () => {
+    const handleSubmit = async (name: string) => {
       try {
         const request: TaskListControllerCreateRequest = {
           createTaskListDto: { name },
         };
         await taskListApi.taskListControllerCreate(request);
+        setDialogOpen(false);
         fetchTaskLists();
       } catch (error) {
         console.error('Failed to create task list:', error);
       }
-    }
+    };
+
+    setDialogContent(
+      <div>
+        <h2 className="text-lg font-bold mb-4">Create Task List</h2>
+        <CreateTaskListForm onSubmit={handleSubmit} />
+      </div>
+    );
+    setDialogOpen(true);
   };
 
   const handleUpdateTaskList = (taskListId: string) => {

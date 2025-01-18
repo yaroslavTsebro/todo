@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { RootState } from '../storage';
-import { setAccessToken, clearUser } from '../storage/slices/user';
+import { clearUser } from '../storage/slices/user';
 import { getTokens } from '../utils/tokenStorage';
 
 const IndexPage: React.FC = () => {
@@ -15,8 +15,7 @@ const IndexPage: React.FC = () => {
     const { accessToken: storedAccessToken } = getTokens();
 
     if (storedAccessToken) {
-      console.log(storedAccessToken)
-      dispatch(setAccessToken(storedAccessToken));
+      navigate('/dashboard');
     } else if (!accessToken && route.pathname !== '/signin' && route.pathname !== '/signup') {
 
       dispatch(clearUser());

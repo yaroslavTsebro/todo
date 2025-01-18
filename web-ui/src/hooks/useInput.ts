@@ -1,4 +1,4 @@
-import { useState } from "react"; 
+import { useState } from 'react';
 
 type State = [
   enteredValue: string,
@@ -10,10 +10,9 @@ type State = [
   reset: Function
 ];
 
-const useInput = (functions: Function[], initialValue: string = ""): State => {
-  const [enteredValue, setEnteredValue] = useState<string>(initialValue); // Initialize with initialValue
-  const [valueInputIsTouched, setValueInputIsTouched] =
-    useState<boolean>(false);
+const useInput = (functions: Function[], initialValue: string = ''): State => {
+  const [enteredValue, setEnteredValue] = useState<string>(initialValue);
+  const [valueInputIsTouched, setValueInputIsTouched] = useState<boolean>(false);
 
   const validationResults: boolean[] = functions.map((func) =>
     Boolean(func(enteredValue))
@@ -24,6 +23,8 @@ const useInput = (functions: Function[], initialValue: string = ""): State => {
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     setEnteredValue(event.target.value);
+
+    setValueInputIsTouched(true);
   };
 
   const inputBlurHandler = (): void => {

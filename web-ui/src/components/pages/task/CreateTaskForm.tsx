@@ -13,7 +13,6 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = () => {
     if (!title) {
-      alert('Title is required');
       return;
     }
     onSubmit(title, description);
