@@ -2,7 +2,7 @@ import { ITask } from './task';
 import { IUserTaskList } from './user-task-list';
 
 export interface ITaskList {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   tasks: ITask[];

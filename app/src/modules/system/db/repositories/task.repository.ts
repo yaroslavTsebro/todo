@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TaskDao } from '../dao/task.dao';
 import { Task } from 'src/shared/dto/entities/task';
 import { UpdateTaskDto } from 'src/shared/dto/task/update';
-import { PaginationQueryDto, PaginationResult } from 'src/shared/dto/pagination';
+import { PaginationQueryDto, PagedData } from 'src/shared/dto/pagination';
 
 @Injectable()
 export class TaskRepository {
@@ -20,7 +20,7 @@ export class TaskRepository {
     return this.dao.findOne({ where: { id } });
   }
 
-  async findAllByTaskListId(filters: Partial<Task>, sortOptions: object, pagination: PaginationQueryDto): Promise<PaginationResult<Task> | null> {
+  async findAllByTaskListId(filters: Partial<Task>, sortOptions: object, pagination: PaginationQueryDto): Promise<PagedData<Task> | null> {
     const { page, limit } = pagination;
     const skip = (page - 1) * limit;
 
@@ -36,10 +36,10 @@ export class TaskRepository {
       total,
       page,
       limit,
-    } as PaginationResult<Task>;
+    } as PagedData<Task>;
   }
 
-  async findByTaskIdAndTaskListId(id: number, taskListId: number): Promise<Task | null> {
+  async findByTaskIdAndTaskListId(id: number, taskListId: string): Promise<Task | null> {
     return this.dao.findOne({ where: { id, taskList: { id: taskListId } } });
   }
 

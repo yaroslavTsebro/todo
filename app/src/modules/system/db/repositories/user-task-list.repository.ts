@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { UserTaskListDao } from '../dao/user-task-list.dao';
 import { UserTaskList } from 'src/shared/dto/entities/user-task-list';
-import { PaginationQueryDto, PaginationResult } from 'src/shared/dto/pagination';
+import { PaginationQueryDto, PagedData } from 'src/shared/dto/pagination';
+import { UserTaskListPaginationResult } from 'src/shared/dto/pagination/task-list';
+import { FindManyOptions } from 'typeorm';
 
 @Injectable()
 export class UserTaskListRepository {
@@ -15,11 +17,31 @@ export class UserTaskListRepository {
     return taskToDelete
   }
 
-  async findByUserAndTaskList(userId: number, taskListId: number): Promise<UserTaskList | null> {
+  async findByUserAndTaskList(userId: number, taskListId: string): Promise<UserTaskList | null> {
     return this.dao.findOne({ where: { user: { id: userId }, taskList: { id: taskListId } } });
   }
 
-  async findAllByUserId(userId: number, pagination: PaginationQueryDto): Promise<PaginationResult<UserTaskList> | null> {
+  async findAllByProjectId(taskListId: string, pagination: PaginationQueryDto): Promise<UserTaskListPaginationResult | null> {
+    const { page, limit } = pagination;
+    const skip = (page - 1) * limit;
+
+    const findOptions = {
+      where: { taskList: {id: taskListId} },
+      skip: skip,
+      take: limit,
+      relations: { user: true }
+    } satisfies FindManyOptions<UserTaskList>;
+
+    const [data, total] = await this.dao.findAndCount(findOptions);
+
+    return {
+      data: data || [],
+      total,
+      page,
+      limit,
+    };
+  }
+  async findAllByUserId(userId: number, pagination: PaginationQueryDto): Promise<UserTaskListPaginationResult | null> {
     const { page, limit } = pagination;
     const skip = (page - 1) * limit;
 
@@ -27,16 +49,13 @@ export class UserTaskListRepository {
       where: { user: { id: userId } },
       skip: skip,
       take: limit,
-    };
+      relations: { taskList: true }
+    } satisfies FindManyOptions<UserTaskList>;
 
     const [data, total] = await this.dao.findAndCount(findOptions);
 
-    if (total === 0) {
-      return null;
-    }
-
     return {
-      data,
+      data: data || [],
       total,
       page,
       limit,

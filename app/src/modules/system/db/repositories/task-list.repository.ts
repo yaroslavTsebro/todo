@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PaginationQueryDto, PaginationResult } from 'src/shared/dto/pagination';
+import { PaginationQueryDto, PagedData } from 'src/shared/dto/pagination';
 import { TaskListDao } from '../dao/task-list.dao';
 import { TaskList } from 'src/shared/dto/entities/task-list';
 import { UpdateProjectDto } from 'src/shared/dto/task-list/update';
@@ -9,7 +9,7 @@ import { In } from 'typeorm';
 export class TaskListRepository {
   constructor(private readonly dao: TaskListDao) { }
 
-  async delete(id: number): Promise<TaskList> {
+  async delete(id: string): Promise<TaskList> {
     const taskToDelete = await this.findById(id);
 
     if (taskToDelete) { await this.dao.delete({ id }); }
@@ -17,11 +17,11 @@ export class TaskListRepository {
     return taskToDelete
   }
 
-  async findById(id: number): Promise<TaskList | null> {
+  async findById(id: string): Promise<TaskList | null> {
     return this.dao.findOne({ where: { id } });
   }
 
-  async findByIds(ids: number[]): Promise<TaskList[] | null> {
+  async findByIds(ids: string[]): Promise<TaskList[] | null> {
     if (!ids || ids.length === 0) {
       return null;
     }
@@ -35,7 +35,7 @@ export class TaskListRepository {
     return taskLists.length > 0 ? taskLists : null;
   }
 
-  async findAllByTaskListId(filters: Partial<TaskList>, sortOptions: object, pagination: PaginationQueryDto): Promise<PaginationResult<TaskList> | null> {
+  async findAllByTaskListId(filters: Partial<TaskList>, sortOptions: object, pagination: PaginationQueryDto): Promise<PagedData<TaskList> | null> {
     const { page, limit } = pagination;
     const skip = (page - 1) * limit;
 
@@ -51,7 +51,7 @@ export class TaskListRepository {
       total,
       page,
       limit,
-    } as PaginationResult<TaskList>;
+    } as PagedData<TaskList>;
   }
 
   async create(task: TaskList): Promise<TaskList> {
@@ -59,7 +59,7 @@ export class TaskListRepository {
     return this.dao.save(userEnt);
   }
 
-  async update(id: number, dto: UpdateProjectDto): Promise<TaskList> {
+  async update(id: string, dto: UpdateProjectDto): Promise<TaskList> {
     const taskToUpdate = await this.findById(id);
 
     if (taskToUpdate) { await this.dao.update({ id }, { ...dto }); }

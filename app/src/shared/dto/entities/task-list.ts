@@ -15,7 +15,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class TaskList implements ITaskList {
   @ApiProperty({ description: 'TaskList ID', example: 'uuid' })
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @ApiProperty({ description: 'TaskList name', example: 'Work Tasks' })
   @Column({ type: 'varchar' })
@@ -29,7 +29,6 @@ export class TaskList implements ITaskList {
   @OneToMany(() => Task, (task: Task) => task.taskList, { cascade: true })
   tasks: Task[];
 
-  @ApiProperty({ description: 'List of user-task associations in the task list', type: () => [UserTaskList] })
   @OneToMany(() => UserTaskList, (userTaskList: UserTaskList) => userTaskList.taskList, { cascade: true })
   userTaskLists: UserTaskList[];
 

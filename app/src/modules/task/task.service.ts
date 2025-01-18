@@ -16,7 +16,7 @@ export class TaskService {
     private readonly taskListRepo: TaskListRepository,
   ) { }
 
-  async create(taskListId: number, createTaskDto: CreateTaskDto) {
+  async create(taskListId: string, createTaskDto: CreateTaskDto) {
     const project = await this.taskListRepo.findById(taskListId);
 
     if (!project) { throw new NotFoundException('Project not found'); }
@@ -37,7 +37,7 @@ export class TaskService {
     return this.taskRepo.delete(taskId);
   }
 
-  async getById(taskId: number, taskListId: number) {
+  async getById(taskId: number, taskListId: string) {
     const task = await this.taskRepo.findByTaskIdAndTaskListId(taskId, taskListId);
 
     if (!task) { throw new NotFoundException('Task not found') }
@@ -45,7 +45,7 @@ export class TaskService {
     return task
   }
 
-  async getAll(taskListId: number, getTasksDto: GetTasksDto) {
+  async getAll(taskListId: string, getTasksDto: GetTasksDto) {
     const { page = 1, limit = 10, sort, status } = getTasksDto;
 
     const filters: any = {};
