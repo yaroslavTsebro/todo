@@ -7,7 +7,7 @@ import { IAuthStrategy } from 'src/shared/contracts/modules/auth';
 import { HASH_SERVICE, IHashService } from 'src/shared/contracts/modules/hash';
 import { EmailAuthPayload } from 'src/shared/dto/auth/email.dto';
 import { TokenResponse, AuthTokenPayload } from 'src/shared/dto/token';
-import { UserNotFoundByEmailException } from 'src/shared/exceptions/user/user-not-found.exception';
+import { UserNotFoundByEmailException } from 'src/shared/exceptions/user/user-not-found-by-email.exception copy';
 
 @Injectable()
 export class EmailSignInStrategy implements IAuthStrategy<EmailAuthPayload, TokenResponse> {
