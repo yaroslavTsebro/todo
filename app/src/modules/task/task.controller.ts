@@ -22,6 +22,7 @@ import { UserTaskListRole } from 'src/shared/contracts/entities/user-task-list';
 import { TaskStatus } from 'src/shared/contracts/entities/task';
 import { Task } from 'src/shared/dto/entities/task';
 import { TaskPaginationResult } from 'src/shared/dto/pagination/task';
+import { ChangeStatusDto } from 'src/shared/dto/task/change-status';
 
 @ApiTags('tasks')
 @ApiBearerAuth()
@@ -59,6 +60,22 @@ export class TaskController {
     @Body() updateTaskDto: UpdateTaskDto,
   ): Promise<Task> {
     return this.taskService.update(taskId, updateTaskDto);
+  }
+
+  @Patch('/projects/:taskListId/tasks/:id')
+  @ApiOperation({ summary: 'Update a task' })
+  @ApiParam({ name: 'taskListId', description: 'Project ID', type: String })
+  @ApiParam({ name: 'id', description: 'Task ID', type: Number })
+  @ApiResponse({ status: 200, description: 'Task successfully updated.', type: Task })
+  @ApiResponse({ status: 400, description: 'Invalid request data.' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Insufficient permissions.' })
+  @ProjectRoles()
+  @ApiBody({ type: ChangeStatusDto })
+  async changeStatus(
+    @Param('id', ParseIntPipe) taskId: number,
+    @Body() dto: ChangeStatusDto,
+  ): Promise<Task> {
+    return this.taskService.update(taskId, dto);
   }
 
   @Delete('/projects/:taskListId/tasks/:id')

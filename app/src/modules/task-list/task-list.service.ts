@@ -73,6 +73,14 @@ export class TaskListService {
     return userTaskLists;
   }
 
+  async getMyUserTaskList(taskListId: string, userId: number): Promise<UserTaskList> {
+    const userTaskLists = await this.userTaskListRepo.findByUserAndTaskList(userId, taskListId);
+
+    if(!userTaskLists) throw new NotFoundException('User doesn\'t belong to this project')
+
+    return userTaskLists;
+  }
+
   async getById(id: string): Promise<TaskList> {
     const taskList = await this.taskListRepo.findById(id);
 
@@ -87,8 +95,8 @@ export class TaskListService {
   ): Promise<UserTaskList> {
     const user = await this.userRepo.findByEmail(dto.email);
 
-    if (!user) {throw new NotFoundException(`User with email ${dto.email} not found.`);}
-    
+    if (!user) { throw new NotFoundException(`User with email ${dto.email} not found.`); }
+
     return this.userTaskListRepo.create(
       {
         user: user,

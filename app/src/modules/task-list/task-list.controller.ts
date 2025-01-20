@@ -86,6 +86,17 @@ export class TaskListController {
   ): Promise<UserTaskListPaginationResult> {
     return this.taskListService.getAllParticipants(taskListId, pagination);
   }
+  
+  @Get(':taskListId/me')
+  @ApiOperation({ summary: 'Get all projects for the current user' })
+  @ApiResponse({ status: 200, description: 'List of projects retrieved successfully.', type: UserTaskList })
+  @ApiResponse({ status: 401, description: 'Unauthorized. Invalid or missing token.' })
+  async getMyUserTaskList(
+    @Param('taskListId') taskListId: string,
+    @CurrentUser() user: IUser,
+  ): Promise<UserTaskList> {
+    return this.taskListService.getMyUserTaskList(taskListId, user.id);
+  }
 
   @Get(':taskListId')
   @ApiOperation({ summary: 'Get a project by its ID' })

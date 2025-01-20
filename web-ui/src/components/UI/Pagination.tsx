@@ -25,16 +25,18 @@ const Pagination: React.FC<PaginationProps> = ({
           currentPage === 1 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
         }`}
       />
-      <span className="text-sm font-medium text-gray-700">
-        {currentPage} / {totalPages}
-      </span>
+      {totalPages > 0 && (
+        <span className="text-sm font-medium text-gray-700">
+          {currentPage} / {totalPages}
+        </span>
+      )}
       <Button
         text="Next"
         onClick={() => {
           if (currentPage < totalPages) onNext();
         }}
         className={`w-auto ${
-          currentPage === totalPages
+          currentPage === totalPages || totalPages === 0
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-blue-500 hover:bg-blue-600'
         }`}
