@@ -11,7 +11,7 @@ interface InviteUserFormProps {
 
 const InviteUserForm: React.FC<InviteUserFormProps> = ({ onSubmit }) => {
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState<InviteUserDtoRoleEnum>(InviteUserDtoRoleEnum.Worker);
+  const [role, setRole] = useState<InviteUserDtoRoleEnum>(InviteUserDtoRoleEnum.Viewer);
 
   const handleSubmit = () => {
     onSubmit(email, role);

@@ -52,6 +52,9 @@ export class TaskService {
     if (status) { filters.status = status }
 
     let sortOptions: any = { taskListId: taskListId };
+    
+    filters.taskList = {};
+    filters.taskList.id = taskListId;
 
     if (sort && Array.isArray(sort)) {
       sort.forEach((s) => {
