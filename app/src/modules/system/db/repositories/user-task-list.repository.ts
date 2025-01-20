@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserTaskListDao } from '../dao/user-task-list.dao';
 import { UserTaskList } from 'src/shared/dto/entities/user-task-list';
-import { PaginationQueryDto, PagedData } from 'src/shared/dto/pagination';
+import { PaginationQueryDto } from 'src/shared/dto/pagination';
 import { UserTaskListPaginationResult } from 'src/shared/dto/pagination/task-list';
 import { FindManyOptions } from 'typeorm';
 

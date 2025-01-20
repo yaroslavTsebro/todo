@@ -62,7 +62,7 @@ export class TaskController {
     return this.taskService.update(taskId, updateTaskDto);
   }
 
-  @Patch('/projects/:taskListId/tasks/:id')
+  @Patch('/projects/:taskListId/tasks/:id/change-status')
   @ApiOperation({ summary: 'Update a task' })
   @ApiParam({ name: 'taskListId', description: 'Project ID', type: String })
   @ApiParam({ name: 'id', description: 'Task ID', type: Number })

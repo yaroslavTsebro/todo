@@ -25,6 +25,7 @@ import { TaskListService } from './task-list.service';
 import { TaskList } from 'src/shared/dto/entities/task-list';
 import { UserTaskList } from 'src/shared/dto/entities/user-task-list';
 import { UserTaskListPaginationResult } from 'src/shared/dto/pagination/task-list';
+import { RemoveUserDto } from 'src/shared/dto/task-list/user/remove';
 
 @ApiTags('task-list')
 @ApiBearerAuth()
@@ -86,10 +87,10 @@ export class TaskListController {
   ): Promise<UserTaskListPaginationResult> {
     return this.taskListService.getAllParticipants(taskListId, pagination);
   }
-  
+
   @Get(':taskListId/me')
-  @ApiOperation({ summary: 'Get all projects for the current user' })
-  @ApiResponse({ status: 200, description: 'List of projects retrieved successfully.', type: UserTaskList })
+  @ApiOperation({ summary: 'Get current users taskList connection' })
+  @ApiResponse({ status: 200, description: 'Current users taskList connection.', type: UserTaskList })
   @ApiResponse({ status: 401, description: 'Unauthorized. Invalid or missing token.' })
   async getMyUserTaskList(
     @Param('taskListId') taskListId: string,
@@ -134,20 +135,12 @@ export class TaskListController {
   @ApiResponse({ status: 403, description: 'Forbidden. Insufficient permissions.' })
   @UseGuards(TaskListGuard)
   @ProjectRoles(UserTaskListRole.OWNER, UserTaskListRole.ADMIN)
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        userId: { type: 'number', example: 2, description: 'ID of the user to remove' },
-      },
-      required: ['userId'],
-    }
-  })
+  @ApiBody({ type: RemoveUserDto })
   async removeUser(
     @Param('taskListId') taskListId: string,
-    @Body('userId', ParseIntPipe) userId: number,
+    @Body() dto: RemoveUserDto,
   ): Promise<UserTaskList> {
-    return this.taskListService.removeUserFromTaskList(taskListId, userId);
+    return this.taskListService.removeUserFromTaskList(taskListId, dto.userId);
   }
 
   @Delete(':taskListId/leave')

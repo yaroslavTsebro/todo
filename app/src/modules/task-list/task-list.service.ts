@@ -50,7 +50,6 @@ export class TaskListService {
       dto,
     );
 
-    console.dir({ taskListId, dto }, { depth: Infinity })
     if (!updatedProject) { throw new NotFoundException('Project not found'); }
 
     return updatedProject;
