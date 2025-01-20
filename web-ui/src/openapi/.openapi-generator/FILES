@@ -4,14 +4,15 @@ apis/TasksApi.ts
 apis/UsersApi.ts
 apis/index.ts
 index.ts
+models/ChangeStatusDto.ts
 models/CreateTaskDto.ts
 models/CreateTaskListDto.ts
 models/EmailAuthPayload.ts
 models/InviteUserDto.ts
 models/RefreshPayload.ts
+models/RemoveUserDto.ts
 models/Task.ts
 models/TaskList.ts
-models/TaskListControllerRemoveUserRequest.ts
 models/TaskPaginationResult.ts
 models/TokenResponse.ts
 models/UpdateProjectDto.ts

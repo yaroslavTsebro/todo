@@ -78,8 +78,7 @@ export interface UserTaskList {
 export const UserTaskListRoleEnum = {
     Owner: 'OWNER',
     Admin: 'ADMIN',
-    Viewer: 'VIEWER',
-    Worker: 'WORKER'
+    Viewer: 'VIEWER'
 } as const;
 export type UserTaskListRoleEnum = typeof UserTaskListRoleEnum[keyof typeof UserTaskListRoleEnum];
 

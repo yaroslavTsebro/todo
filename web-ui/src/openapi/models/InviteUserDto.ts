@@ -39,7 +39,6 @@ export interface InviteUserDto {
  * @export
  */
 export const InviteUserDtoRoleEnum = {
-    Worker: 'WORKER',
     Admin: 'ADMIN',
     Viewer: 'VIEWER'
 } as const;

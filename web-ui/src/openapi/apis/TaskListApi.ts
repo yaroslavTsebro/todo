@@ -18,8 +18,8 @@ import * as runtime from '../runtime';
 import type {
   CreateTaskListDto,
   InviteUserDto,
+  RemoveUserDto,
   TaskList,
-  TaskListControllerRemoveUserRequest,
   UpdateProjectDto,
   UserTaskList,
   UserTaskListPaginationResult,
@@ -29,10 +29,10 @@ import {
     CreateTaskListDtoToJSON,
     InviteUserDtoFromJSON,
     InviteUserDtoToJSON,
+    RemoveUserDtoFromJSON,
+    RemoveUserDtoToJSON,
     TaskListFromJSON,
     TaskListToJSON,
-    TaskListControllerRemoveUserRequestFromJSON,
-    TaskListControllerRemoveUserRequestToJSON,
     UpdateProjectDtoFromJSON,
     UpdateProjectDtoToJSON,
     UserTaskListFromJSON,
@@ -60,14 +60,22 @@ export interface TaskListControllerGetByIdRequest {
     taskListId: string;
 }
 
+export interface TaskListControllerGetMyUserTaskListRequest {
+    taskListId: string;
+}
+
 export interface TaskListControllerInviteUserRequest {
     taskListId: string;
     inviteUserDto: InviteUserDto;
 }
 
-export interface TaskListControllerRemoveUserOperationRequest {
+export interface TaskListControllerLeaveRequest {
     taskListId: string;
-    taskListControllerRemoveUserRequest: TaskListControllerRemoveUserRequest;
+}
+
+export interface TaskListControllerRemoveUserRequest {
+    taskListId: string;
+    removeUserDto: RemoveUserDto;
 }
 
 export interface TaskListControllerUpdateRequest {
@@ -257,6 +265,47 @@ export class TaskListApi extends runtime.BaseAPI {
     }
 
     /**
+     * Get current users taskList connection
+     */
+    async taskListControllerGetMyUserTaskListRaw(requestParameters: TaskListControllerGetMyUserTaskListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserTaskList>> {
+        if (requestParameters['taskListId'] == null) {
+            throw new runtime.RequiredError(
+                'taskListId',
+                'Required parameter "taskListId" was null or undefined when calling taskListControllerGetMyUserTaskList().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/projects/{taskListId}/me`.replace(`{${"taskListId"}}`, encodeURIComponent(String(requestParameters['taskListId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserTaskListFromJSON(jsonValue));
+    }
+
+    /**
+     * Get current users taskList connection
+     */
+    async taskListControllerGetMyUserTaskList(requestParameters: TaskListControllerGetMyUserTaskListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserTaskList> {
+        const response = await this.taskListControllerGetMyUserTaskListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Invite a user to the project
      */
     async taskListControllerInviteUserRaw(requestParameters: TaskListControllerInviteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserTaskList>> {
@@ -310,7 +359,48 @@ export class TaskListApi extends runtime.BaseAPI {
     /**
      * Remove a user from the project
      */
-    async taskListControllerRemoveUserRaw(requestParameters: TaskListControllerRemoveUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserTaskList>> {
+    async taskListControllerLeaveRaw(requestParameters: TaskListControllerLeaveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserTaskList>> {
+        if (requestParameters['taskListId'] == null) {
+            throw new runtime.RequiredError(
+                'taskListId',
+                'Required parameter "taskListId" was null or undefined when calling taskListControllerLeave().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/projects/{taskListId}/leave`.replace(`{${"taskListId"}}`, encodeURIComponent(String(requestParameters['taskListId']))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserTaskListFromJSON(jsonValue));
+    }
+
+    /**
+     * Remove a user from the project
+     */
+    async taskListControllerLeave(requestParameters: TaskListControllerLeaveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserTaskList> {
+        const response = await this.taskListControllerLeaveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Remove a user from the project
+     */
+    async taskListControllerRemoveUserRaw(requestParameters: TaskListControllerRemoveUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserTaskList>> {
         if (requestParameters['taskListId'] == null) {
             throw new runtime.RequiredError(
                 'taskListId',
@@ -318,10 +408,10 @@ export class TaskListApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['taskListControllerRemoveUserRequest'] == null) {
+        if (requestParameters['removeUserDto'] == null) {
             throw new runtime.RequiredError(
-                'taskListControllerRemoveUserRequest',
-                'Required parameter "taskListControllerRemoveUserRequest" was null or undefined when calling taskListControllerRemoveUser().'
+                'removeUserDto',
+                'Required parameter "removeUserDto" was null or undefined when calling taskListControllerRemoveUser().'
             );
         }
 
@@ -344,7 +434,7 @@ export class TaskListApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-            body: TaskListControllerRemoveUserRequestToJSON(requestParameters['taskListControllerRemoveUserRequest']),
+            body: RemoveUserDtoToJSON(requestParameters['removeUserDto']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserTaskListFromJSON(jsonValue));
@@ -353,7 +443,7 @@ export class TaskListApi extends runtime.BaseAPI {
     /**
      * Remove a user from the project
      */
-    async taskListControllerRemoveUser(requestParameters: TaskListControllerRemoveUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserTaskList> {
+    async taskListControllerRemoveUser(requestParameters: TaskListControllerRemoveUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserTaskList> {
         const response = await this.taskListControllerRemoveUserRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -16,12 +16,15 @@
 
 import * as runtime from '../runtime';
 import type {
+  ChangeStatusDto,
   CreateTaskDto,
   Task,
   TaskPaginationResult,
   UpdateTaskDto,
 } from '../models/index';
 import {
+    ChangeStatusDtoFromJSON,
+    ChangeStatusDtoToJSON,
     CreateTaskDtoFromJSON,
     CreateTaskDtoToJSON,
     TaskFromJSON,
@@ -31,6 +34,12 @@ import {
     UpdateTaskDtoFromJSON,
     UpdateTaskDtoToJSON,
 } from '../models/index';
+
+export interface TaskControllerChangeStatusRequest {
+    id: number;
+    taskListId: string;
+    changeStatusDto: ChangeStatusDto;
+}
 
 export interface TaskControllerCreateRequest {
     taskListId: string;
@@ -66,6 +75,64 @@ export interface TaskControllerUpdateRequest {
  * 
  */
 export class TasksApi extends runtime.BaseAPI {
+
+    /**
+     * Update a task
+     */
+    async taskControllerChangeStatusRaw(requestParameters: TaskControllerChangeStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Task>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling taskControllerChangeStatus().'
+            );
+        }
+
+        if (requestParameters['taskListId'] == null) {
+            throw new runtime.RequiredError(
+                'taskListId',
+                'Required parameter "taskListId" was null or undefined when calling taskControllerChangeStatus().'
+            );
+        }
+
+        if (requestParameters['changeStatusDto'] == null) {
+            throw new runtime.RequiredError(
+                'changeStatusDto',
+                'Required parameter "changeStatusDto" was null or undefined when calling taskControllerChangeStatus().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/tasks/projects/{taskListId}/tasks/{id}/change-status`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))).replace(`{${"taskListId"}}`, encodeURIComponent(String(requestParameters['taskListId']))),
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ChangeStatusDtoToJSON(requestParameters['changeStatusDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TaskFromJSON(jsonValue));
+    }
+
+    /**
+     * Update a task
+     */
+    async taskControllerChangeStatus(requestParameters: TaskControllerChangeStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Task> {
+        const response = await this.taskControllerChangeStatusRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Create a new task

@@ -1,14 +1,15 @@
 // @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
+export * from './ChangeStatusDto';
 export * from './CreateTaskDto';
 export * from './CreateTaskListDto';
 export * from './EmailAuthPayload';
 export * from './InviteUserDto';
 export * from './RefreshPayload';
+export * from './RemoveUserDto';
 export * from './Task';
 export * from './TaskList';
-export * from './TaskListControllerRemoveUserRequest';
 export * from './TaskPaginationResult';
 export * from './TokenResponse';
 export * from './UpdateProjectDto';
