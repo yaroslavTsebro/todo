@@ -20,7 +20,7 @@ import { UpdateProjectDto } from 'src/shared/dto/task-list/update';
 import { InviteUserDto } from 'src/shared/dto/task-list/user/invite';
 import { AuthorizationGuard } from '../auth/guards/authorization.guard';
 import { TaskListGuard } from '../auth/guards/task-list.guard';
-import { PaginationQueryDto, PagedData } from 'src/shared/dto/pagination';
+import { PaginationQueryDto } from 'src/shared/dto/pagination';
 import { TaskListService } from './task-list.service';
 import { TaskList } from 'src/shared/dto/entities/task-list';
 import { UserTaskList } from 'src/shared/dto/entities/user-task-list';

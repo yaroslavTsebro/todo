@@ -5,7 +5,6 @@ export enum UserTaskListRole {
   OWNER = 'OWNER',
   ADMIN = 'ADMIN',
   VIEWER = 'VIEWER',
-  WORKER = 'WORKER',
 }
 
 export interface IUserTaskList {

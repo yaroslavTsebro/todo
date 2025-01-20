@@ -31,7 +31,7 @@ export class UserTaskList implements IUserTaskList {
   @Column({
     type: 'enum',
     enum: UserTaskListRole,
-    default: UserTaskListRole.WORKER,
+    default: UserTaskListRole.VIEWER,
   })
   role: UserTaskListRole;
 

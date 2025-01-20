@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsEnum } from 'class-validator';
 
 export enum InviteUserRole {
-  WORKER = 'WORKER',
   ADMIN = 'ADMIN',
   VIEWER = 'VIEWER',
 }
