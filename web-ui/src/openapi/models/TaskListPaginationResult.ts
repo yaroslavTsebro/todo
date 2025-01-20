@@ -72,7 +72,7 @@ export function TaskListPaginationResultFromJSONTyped(json: any, ignoreDiscrimin
     if (json == null) {
         return json;
     }
-    console.dir(json, {depth: Infinity});
+
     return {
         
         'data': ((json['data'] as Array<any>).map(UserTaskListFromJSON)),

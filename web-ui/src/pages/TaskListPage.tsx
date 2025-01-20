@@ -12,17 +12,20 @@ import {
   UpdateTaskDtoStatusEnum,
   TaskControllerCreateRequest,
   TaskControllerUpdateRequest,
+  UserTaskListRoleEnum,
+  TaskControllerChangeStatusRequest,
 } from '../openapi';
 import EditTaskForm from '../components/pages/task/EditTaskForm';
 import CreateTaskForm from '../components/pages/task/CreateTaskForm';
 import Pagination from '../components/UI/Pagination';
-import TaskCard from '../components/UI/TaskCardю';
-
+import TaskCard from '../components/UI/TaskCard';
+import ChangeStatusTaskForm from '../components/pages/task/ChangeStatusTaskForm';
 
 const TaskListPage: React.FC = () => {
   const { taskListId } = useParams<{ taskListId: string }>();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [participants, setParticipants] = useState<UserTaskList[]>([]);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState<React.ReactNode>(null);
   const [pagination, setPagination] = useState({ page: 1, limit: 3, total: 1 });
@@ -35,6 +38,7 @@ const TaskListPage: React.FC = () => {
   useEffect(() => {
     fetchTasks();
     fetchParticipants();
+    getCurrentRole();
   }, [pagination.page, participantsPagination.page]);
 
   const fetchTasks = async () => {
@@ -68,17 +72,29 @@ const TaskListPage: React.FC = () => {
       });
       const data = response as UserTaskListPaginationResult;
       setParticipants(data.data);
-      setParticipantsPagination((prev) => ({
-        ...prev,
-        total: Math.ceil(data.total / participantsPagination.limit),
-      }));
     } catch (error) {
       console.error('Failed to fetch participants:', error);
     }
   };
 
+  const getCurrentRole = async () => {
+    try {
+      const response = await taskListApi.taskListControllerGetMyUserTaskList({
+        taskListId: taskListId!,
+      });
+      const data = response as UserTaskList;
+      setCurrentUserRole(data.role);
+    } catch (error) {
+      console.error('Failed to fetch role:', error);
+    }
+  };
+
   const openEditTaskDialog = (task: Task) => {
-    const handleSubmit = async (updatedTitle: string, updatedDescription: string, updatedStatus: string) => {
+    const handleSubmit = async (
+      updatedTitle: string,
+      updatedDescription: string,
+      updatedStatus: string
+    ) => {
       const request: TaskControllerUpdateRequest = {
         id: task.id,
         taskListId: taskListId!,
@@ -138,14 +154,59 @@ const TaskListPage: React.FC = () => {
     }
   };
 
+  const openChangeStatusTaskDialog = (task: Task) => {
+    const handleSubmit = async (updatedStatus: string) => {
+      const request: TaskControllerChangeStatusRequest = {
+        id: task.id,
+        taskListId: taskListId!,
+        changeStatusDto: {
+          status: updatedStatus as UpdateTaskDtoStatusEnum,
+        },
+      };
+
+      try {
+        await taskApi.taskControllerChangeStatus(request);
+        setDialogOpen(false);
+        fetchTasks();
+      } catch (error) {
+        console.error('Failed to change task status:', error);
+      }
+    };
+
+    setDialogContent(
+      <ChangeStatusTaskForm
+        initialStatus={task.status}
+        onSubmit={handleSubmit}
+        onCancel={() => setDialogOpen(false)}
+      />
+    );
+    setDialogOpen(true);
+  };
+
+  const canPerformAction = (roles: string[]) => {
+    if (roles.length === 0) return true;
+    return (currentUserRole && roles.includes(currentUserRole)) || false;
+  };
+
   return (
-    <div className="flex">
-      <div className="w-1/4 border-r p-4">
+    <div className="flex flex-col lg:flex-row">
+      <div className="lg:w-1/4 w-full border-b lg:border-b-0 lg:border-r p-4">
         <h2 className="text-lg font-bold mb-4">Participants</h2>
         <ul className="space-y-2">
           {participants.map((participant) => (
-            <li key={participant.id} className="text-sm text-gray-700">
-              {participant.user.email}
+            <li
+              key={participant.id}
+              className="text-sm text-gray-700 flex justify-between items-center"
+            >
+              <span>{participant.user.email}</span>
+              {canPerformAction([UserTaskListRoleEnum.Owner]) &&
+                participant.role !== UserTaskListRoleEnum.Owner && (
+                  <Button
+                    text="Remove"
+                    onClick={() => console.log('Remove user', participant.id)}
+                    className="bg-red-500 hover:bg-red-600 w-20"
+                  />
+                )}
             </li>
           ))}
         </ul>
@@ -167,20 +228,35 @@ const TaskListPage: React.FC = () => {
         />
       </div>
 
-      <div className="w-3/4 p-4">
+      <div className="lg:w-3/4 w-full p-4">
         <h2 className="text-lg font-bold mb-2">Tasks</h2>
-        <Button
-          text="Create Task"
-          onClick={openCreateTaskDialog}
-          className="bg-green-500 hover:bg-green-600 mb-4"
-        />
+        {canPerformAction([UserTaskListRoleEnum.Admin, UserTaskListRoleEnum.Owner]) && (
+          <Button
+            text="Create Task"
+            onClick={openCreateTaskDialog}
+            className="bg-green-500 hover:bg-green-600 mb-4"
+          />
+        )}
         <ul className="space-y-4">
           {tasks.map((task) => (
             <li key={task.id}>
               <TaskCard
                 task={task}
-                onEdit={() => openEditTaskDialog(task)}
-                onDelete={() => deleteTask(task.id)}
+                onEdit={
+                  canPerformAction([UserTaskListRoleEnum.Admin, UserTaskListRoleEnum.Owner])
+                    ? () => openEditTaskDialog(task)
+                    : undefined
+                }
+                onDelete={
+                  canPerformAction([UserTaskListRoleEnum.Admin, UserTaskListRoleEnum.Owner])
+                    ? () => deleteTask(task.id)
+                    : undefined
+                }
+                onStatusChange={
+                  canPerformAction([])
+                    ? () => openChangeStatusTaskDialog(task)
+                    : undefined
+                }
               />
             </li>
           ))}

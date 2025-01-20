@@ -7,7 +7,7 @@ const configuration = new Configuration({
     {
       pre: async (context) => {
         const token = getTokens()?.accessToken || '';
-        console.dir(token);
+        
         if (token) {
           context.init.headers = {
             ...context.init.headers,
